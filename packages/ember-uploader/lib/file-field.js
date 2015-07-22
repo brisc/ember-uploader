@@ -12,9 +12,9 @@ export default Ember.TextField.extend(Ember.Evented, {
       this.trigger('filesDidChange', input.files);
       set(this, 'files', input.files); // to be removed in future release, needed for `files` observer to continue working
     }
-  },
-  click: function() {
-      this.$().value = null;
+    // reset input
+    input.value = null;
+    return false;
   },
 
   _deprecateFileObserver: on('init', function() {
