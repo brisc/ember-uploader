@@ -28,7 +28,7 @@ export default Uploader.extend({
     return response;
   },
 
-  upload: function(file, data) {
+  upload: function(file, data, idx) {
     var self = this;
 
     set(this, 'isUploading', true);
@@ -48,7 +48,7 @@ export default Uploader.extend({
 
       var formData = self.setupFormData(file, json);
 
-      return self.ajax(url, formData);
+      return self.ajax(url, formData, null, idx);
     });
   },
 
