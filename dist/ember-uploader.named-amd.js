@@ -76,7 +76,7 @@ define("ember-uploader/s3",
         return response;
       },
 
-      upload: function(file, data) {
+      upload: function(file, data, idx) {
         var self = this;
 
         set(this, 'isUploading', true);
@@ -96,7 +96,7 @@ define("ember-uploader/s3",
 
           var formData = self.setupFormData(file, json);
 
-          return self.ajax(url, formData);
+          return self.ajax(url, formData, null, idx);
         });
       },
 
