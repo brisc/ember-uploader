@@ -20,3 +20,5 @@ tmp
 dist/tests
 
 .env
+
+.idea

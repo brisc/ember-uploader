@@ -13,6 +13,9 @@ export default Ember.TextField.extend(Ember.Evented, {
       set(this, 'files', input.files); // to be removed in future release, needed for `files` observer to continue working
     }
   },
+  click: function() {
+      this.$().value = null;
+  },
 
   _deprecateFileObserver: on('init', function() {
     var hasFilesObserver = this.hasObserverFor('files');

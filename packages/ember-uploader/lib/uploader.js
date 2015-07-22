@@ -21,7 +21,7 @@ export default Ember.Object.extend(Ember.Evented, {
    * @param  {array} extra
    * @return {object}       jquery promise from ajax object
    */
-  upload: function(files, extra) {
+  upload: function(files, extra, idx) {
     extra = extra || {};
     var data = this.setupFormData(files, extra);
     var url  = get(this, 'url');
@@ -30,7 +30,7 @@ export default Ember.Object.extend(Ember.Evented, {
 
     set(this, 'isUploading', true);
 
-    return this.ajax(url, data, type);
+    return this.ajax(url, data, type, idx);
   },
 
   setupFormData: function(files, extra) {
@@ -105,7 +105,7 @@ export default Ember.Object.extend(Ember.Evented, {
     this.trigger('isAborting');
   },
 
-  ajaxSettings: function(url, params, method) {
+  ajaxSettings: function(url, params, method, idx) {
     var self = this;
     return {
       url: url,
@@ -115,6 +115,7 @@ export default Ember.Object.extend(Ember.Evented, {
       xhr: function() {
         var xhr = Ember.$.ajaxSettings.xhr();
         xhr.upload.onprogress = function(e) {
+          e.fileIndex = idx;
           self.didProgress(e);
         };
         self.one('isAborting', function() { xhr.abort(); });
@@ -124,8 +125,8 @@ export default Ember.Object.extend(Ember.Evented, {
     };
   },
 
-  ajax: function(url, params, method) {
-    return this._ajax(this.ajaxSettings(url, params, method));
+  ajax: function(url, params, method, idx) {
+    return this._ajax(this.ajaxSettings(url, params, method, idx));
   },
 
   _ajax: function(settings) {
