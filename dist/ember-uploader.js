@@ -142,6 +142,9 @@ define("ember-uploader/file-field",
           this.trigger('filesDidChange', input.files);
           set(this, 'files', input.files); // to be removed in future release, needed for `files` observer to continue working
         }
+        // reset input
+        input.value = null;
+        return false;
       },
 
       _deprecateFileObserver: on('init', function() {
@@ -283,7 +286,7 @@ define("ember-uploader/uploader",
        * @param  {array} extra
        * @return {object}       jquery promise from ajax object
        */
-      upload: function(files, extra) {
+      upload: function(files, extra, idx) {
         extra = extra || {};
         var data = this.setupFormData(files, extra);
         var url  = get(this, 'url');
@@ -292,7 +295,7 @@ define("ember-uploader/uploader",
 
         set(this, 'isUploading', true);
 
-        return this.ajax(url, data, type);
+        return this.ajax(url, data, type, idx);
       },
 
       setupFormData: function(files, extra) {
@@ -367,7 +370,7 @@ define("ember-uploader/uploader",
         this.trigger('isAborting');
       },
 
-      ajaxSettings: function(url, params, method) {
+      ajaxSettings: function(url, params, method, idx) {
         var self = this;
         return {
           url: url,
@@ -377,6 +380,7 @@ define("ember-uploader/uploader",
           xhr: function() {
             var xhr = Ember.$.ajaxSettings.xhr();
             xhr.upload.onprogress = function(e) {
+              e.fileIndex = idx;
               self.didProgress(e);
             };
             self.one('isAborting', function() { xhr.abort(); });
@@ -386,8 +390,8 @@ define("ember-uploader/uploader",
         };
       },
 
-      ajax: function(url, params, method) {
-        return this._ajax(this.ajaxSettings(url, params, method));
+      ajax: function(url, params, method, idx) {
+        return this._ajax(this.ajaxSettings(url, params, method, idx));
       },
 
       _ajax: function(settings) {
