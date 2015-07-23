@@ -8,9 +8,10 @@ export default Ember.TextField.extend(Ember.Evented, {
   multiple: false,
   change: function(e) {
     var input = e.target;
-    if (!Ember.isEmpty(input.files)) {
-      this.trigger('filesDidChange', input.files);
-      set(this, 'files', input.files); // to be removed in future release, needed for `files` observer to continue working
+    var files = Ember.$.extend(true, {}, input.files);
+    if (!Ember.isEmpty(files)) {
+      this.trigger('filesDidChange', files);
+      set(this, 'files', files); // to be removed in future release, needed for `files` observer to continue working
     }
     // reset input
     input.value = null;
